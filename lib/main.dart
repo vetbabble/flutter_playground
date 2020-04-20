@@ -1,24 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_playground/todog_colors.dart';
+import 'package:flutter_playground/screens_bp/add_pet_name.dart';
+import 'package:flutter_playground/screens_bp/add_pet_photo.dart';
+import 'package:flutter_playground/screens_bp/home.dart';
+import 'package:flutter_playground/screens_bp/login.dart';
+import 'package:flutter_playground/screens_bp/register.dart';
 
-import 'pages/home_page.dart';
+import 'bloc/auth_bloc.dart';
+import 'injection/dependency_injection.dart';
 
-void main() => runApp(MyApp());
+void main() => setupLocator();
+
+Future setupLocator() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Injector.getInstance();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 10)).then((v) {
+      authBloc.restoreSession();
+    });
+
     return MaterialApp(
-      title: 'To Dog',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'PTSans',
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: ToDogColors.kabul,
-        unselectedWidgetColor: Colors.white,
-        primaryColor: ToDogColors.orange,
-      ),
-      home: HomePage(),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        routes: <String, WidgetBuilder>{
+          '/addpet': (BuildContext context) => AddPetName(),
+          '/register': (BuildContext context) => RegisterPage(),
+          '/home': (BuildContext context) => HomePage(),
+        },
+        home: createContent());
+  }
+
+  createContent() {
+    return StreamBuilder<bool>(
+        stream: authBloc.isSessionValid,
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData && snapshot.data) {
+            return HomePage();
+          }
+          return LoginPage();
+        });
   }
 }
