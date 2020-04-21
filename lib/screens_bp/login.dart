@@ -6,6 +6,8 @@ import 'package:flutter_playground/screens_bp/register.dart';
 import 'package:flutter_login/flutter_login.dart';
 
 import '../constants.dart';
+import '../custom_route.dart';
+import '../dashboard_screen.dart';
 import '../users.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,20 +23,31 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginBloc bloc = LoginBloc();
+  Duration get loginTime => Duration(milliseconds: timeDilation.ceil() * 2250);
 
   @override
   Widget build(BuildContext context) {
-      Future<String> _loginUser(LoginData data) {
-    return Future.delayed(loginTime).then((_) {
-      if (!mockUsers.containsKey(data.name)) {
-        return 'Username not exists';
-      }
-      if (mockUsers[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      return null;
-    });
-  }
+    Future<String> _loginUser(LoginData data) {
+      return Future.delayed(loginTime).then((_) {
+        if (!mockUsers.containsKey(data.name)) {
+          return 'Username not exists';
+        }
+        if (mockUsers[data.name] != data.password) {
+          return 'Password does not match';
+        }
+        return null;
+      });
+    }
+
+    Future<String> _recoverPassword(String name) {
+      return Future.delayed(loginTime).then((_) {
+        if (!mockUsers.containsKey(name)) {
+          return 'Username not exists';
+        }
+        return null;
+      });
+    }
+
     final inputBorder = BorderRadius.vertical(
       bottom: Radius.circular(10.0),
       top: Radius.circular(20.0),
@@ -45,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
       logo: 'assets/images/ecorp.png',
       logoTag: Constants.logoTag,
       titleTag: Constants.titleTag,
-            emailValidator: (value) {
+      emailValidator: (value) {
         if (!value.contains('@') || !value.endsWith('.com')) {
           return "Email must contain '@' and end with '.com'";
         }
@@ -57,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
-      onLogin: (loginData) {if (bloc.submitValid);(return null}},
+      onLogin: _loginUser,
       onSignup: (loginData) {
         print('Signup info');
         print('Name: ${loginData.name}');
@@ -79,35 +92,34 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: Text("Login"),
-  //     ),
-  //     body: Container(
-  //       margin: EdgeInsets.all(20.0),
-        // child: Column(
-        //   children: <Widget>[
-        //     emailField(bloc),
-        //     passwordField(bloc),
-        //     Container(margin: EdgeInsets.only(top: 25.0)),
-        //     submitButton(bloc),
-        //     InkResponse(
-        //       child: Text("Don't have account?"),
-        //       onTap: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => RegisterPage()),
-        //         );
-        //       },
-        //     ),
-        //     loadingIndicator(bloc)
-        //   ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     appBar: AppBar(
+//       title: Text("Login"),
+//     ),
+//     body: Container(
+//       margin: EdgeInsets.all(20.0),
+// child: Column(
+//   children: <Widget>[
+//     emailField(bloc),
+//     passwordField(bloc),
+//     Container(margin: EdgeInsets.only(top: 25.0)),
+//     submitButton(bloc),
+//     InkResponse(
+//       child: Text("Don't have account?"),
+//       onTap: () {
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => RegisterPage()),
+//         );
+//       },
+//     ),
+//     loadingIndicator(bloc)
+//   ],
+//       ),
+//     ),
+//   );
+// }
 
 Widget loadingIndicator(LoginBloc bloc) => StreamBuilder<bool>(
       stream: bloc.loading,
