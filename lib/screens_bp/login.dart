@@ -24,6 +24,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+      Future<String> _loginUser(LoginData data) {
+    return Future.delayed(loginTime).then((_) {
+      if (!mockUsers.containsKey(data.name)) {
+        return 'Username not exists';
+      }
+      if (mockUsers[data.name] != data.password) {
+        return 'Password does not match';
+      }
+      return null;
+    });
+  }
     final inputBorder = BorderRadius.vertical(
       bottom: Radius.circular(10.0),
       top: Radius.circular(20.0),
@@ -46,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
-      onLogin: submitButton(loginData),
+      onLogin: (loginData) {if (bloc.submitValid);(return null}},
       onSignup: (loginData) {
         print('Signup info');
         print('Name: ${loginData.name}');
