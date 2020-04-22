@@ -70,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
-      onLogin: _loginUser,
+      onLogin: (_) => Future(null),
+      // onLogin: _loginUser,
       onSignup: (loginData) {
         print('Signup info');
         print('Name: ${loginData.name}');
